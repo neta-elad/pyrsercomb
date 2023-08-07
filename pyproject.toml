@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyrsercomb"
+description = "Simple, typed, parser combinator library for Python"
+readme = "README.md"
+requires-python = ">=3.11"
+keywords = ["parser", "parsing"]
+license = { text = "GPLv3" }
+dependencies = [
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+test = [
+    "mypy==1.1.1",
+    "black==23.1.0",
+    "isort==5.12.0",
+    "autoflake==2.0.2",
+    "pytest==7.2.2",
+    "pytest-cov==4.1.0",
+    "vulture==2.7",
+    "pytest-xdist==3.3.1",
+]
+
+[tool.setuptools.packages.find]
+include = ["pyrsercomb*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "pyrsercomb.__version__" }
+
+[tool.mypy]
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+
+[tool.black]
+extend-exclude = ".venv"
+
+[tool.isort]
+profile = "black"
+src_paths = ["pyrsercomb", "tests"]
+skip = [".venv"]
+
+[tool.autoflake]
+recursive = true
+exclude = [".venv"]
+remove_unused_variables = true
+remove_all_unused_imports = true
+expand_star_imports = true
+in_place = true
+
+[tool.pytest.ini_options]
+addopts = "-q"
+
