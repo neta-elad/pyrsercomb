@@ -31,6 +31,9 @@ include = ["pyrsercomb*"]
 [tool.setuptools.dynamic]
 version = { attr = "pyrsercomb.__version__" }
 
+[tool.setuptools.package-data]
+"pyrsercomb" = ["py.typed"]
+
 [tool.mypy]
 disallow_untyped_calls = true
 disallow_untyped_defs = true
