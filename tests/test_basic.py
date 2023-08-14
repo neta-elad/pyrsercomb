@@ -81,3 +81,14 @@ def test_parse_all() -> None:
 
     assert number_all.parse("123") == Success(3, 123)
     assert number_all.parse("123 foo") == Failure(4, "eof")
+
+
+def test_sep_by() -> None:
+    number = token(regex(r"[1-9][0-9]+"))[int]
+    comma = token(string(","))
+    numbers = full(number @ comma)
+
+    assert numbers.parse("") == Failure(0, r"[1-9][0-9]+")
+    assert numbers.parse("123") == Success(3, [123])
+    assert numbers.parse("123 , 456") == Success(9, [123, 456])
+    assert numbers.parse("123,") == Failure(4, r"[1-9][0-9]+")

@@ -166,6 +166,33 @@ class Parser(Generic[_I, _U]):
 
         return many
 
+    def __matmul__(self, other: "Parser[_I, _V]") -> "Parser[_I, list[_U]]":
+        @SimpleParser
+        def sep_by(text: _I, index: int) -> Value[list[_U]]:
+            current_index = index
+            values: list[_U] = []
+
+            while True:
+                result = self(text, current_index)
+                match result:
+                    case Success():
+                        values.append(result.value)
+                        current_index = result.index
+                    case Failure():
+                        return result
+
+                result2 = other(text, current_index)
+                match result2:
+                    case Success():
+                        current_index = result2.index
+                        continue
+                    case Failure():
+                        break
+
+            return Success(current_index, values)
+
+        return sep_by
+
     def __getitem__(self, item: Callable[[_U], _V]) -> "Parser[_I, _V]":
         @SimpleParser
         def mapped(text: _I, index: int) -> Value[_V]:
