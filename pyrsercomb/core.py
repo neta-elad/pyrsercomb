@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Callable, Generic, TypeVar
+from typing import Any, Callable, Generic, Literal, TypeVar
 
 _U = TypeVar("_U", covariant=True)
 _I = TypeVar("_I", contravariant=True)
@@ -18,6 +18,9 @@ class Success(Generic[_U]):
 class Failure:
     index: int
     expected: str
+
+    def __bool__(self) -> Literal[False]:
+        return False
 
 
 Value = Success[_U] | Failure

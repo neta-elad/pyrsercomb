@@ -20,3 +20,9 @@ def test_generic_str() -> None:
 
     assert full.parse_or_raise("1211") == ["1", "2", "1", "1"]
     assert full.parse("123") == Failure(2, "eof")
+
+
+def test_bool() -> None:
+    ones = ~just("1") << eof()
+    assert ones.parse("111")
+    assert not ones.parse("123")
