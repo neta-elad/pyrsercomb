@@ -1,5 +1,5 @@
 import re
-from typing import TypeVar, overload
+from typing import TypeVar
 
 from .core import Failure, Parser, SimpleParser, Success, Value
 
@@ -25,16 +25,6 @@ def strings(expected: list[str]) -> list[Parser[str, str]]:
 
 def chars(expected: str) -> list[Parser[str, str]]:
     return list(map(string, expected))
-
-
-@overload
-def regex(expression: str) -> Parser[str, str]:
-    ...
-
-
-@overload
-def regex(expression: re.Pattern[str]) -> Parser[str, str]:
-    ...
 
 
 def regex(expression: str | re.Pattern[str]) -> Parser[str, str]:
