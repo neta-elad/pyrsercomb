@@ -62,20 +62,5 @@ def eol() -> Parser[str, str]:
     return string("\n")
 
 
-def eof() -> Parser[str, None]:
-    @SimpleParser
-    def parser(text: str, index: int) -> Value[None]:
-        if index >= len(text):
-            return Success(index, None)
-        else:
-            return Failure(index, "eof")
-
-    return parser
-
-
 def token(parser: Parser[str, _U]) -> Parser[str, _U]:
     return whitespace() >> parser << whitespace()
-
-
-def full(parser: Parser[str, _U]) -> Parser[str, _U]:
-    return parser << eof()

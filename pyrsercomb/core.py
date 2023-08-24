@@ -1,4 +1,4 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any, Callable, Generic, TypeVar
 
@@ -44,7 +44,7 @@ class PyrsercombError(Exception):
         return f"Expected {self.expected} at {self.location()} in `{self.text}`"
 
 
-class Parser(Generic[_I, _U]):
+class Parser(ABC, Generic[_I, _U]):
     @abstractmethod
     def __call__(self, text: _I, index: int) -> Value[_U]:
         ...
@@ -205,6 +205,18 @@ class Parser(Generic[_I, _U]):
 
         return mapped
 
+    def __truediv__(self, other: "Parser[_U, _V]") -> "Parser[_I, _V]":
+        @SimpleParser
+        def bind(text: _I, index: int) -> Value[_V]:
+            result = self(text, index)
+            match result:
+                case Success(_index, value):
+                    return other(value, 0)
+                case Failure():
+                    return result
+
+        return bind
+
     def parse(self, text: _I) -> Value[_U]:
         return self(text, 0)
 
@@ -218,7 +230,7 @@ class Parser(Generic[_I, _U]):
 
 
 @dataclass
-class SimpleParser(Generic[_I, _U], Parser[_I, _U]):
+class SimpleParser(Parser[_I, _U]):
     fun: RawParser[_I, _U]
 
     def __call__(self, text: _I, index: int) -> Value[_U]:
